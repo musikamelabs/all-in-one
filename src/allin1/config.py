@@ -41,7 +41,9 @@ class DataConfig:
 class HarmonixConfig(DataConfig):
   name: str = 'harmonix'
 
-  demixed: bool = True
+  # set to True to demix
+  demixed: bool = False
+  
   num_instruments: int = 4
   num_labels: int = 10
 
