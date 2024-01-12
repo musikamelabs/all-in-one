@@ -147,12 +147,15 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
     # Return the paths to extracted spectrograms
     return spec_paths
 
-
-@ray.remote(num_cpus=1)
+import ray
+from ray.remote(num_cpus=1)
 def _extract_spectrogram_ray(demix_path: Path, dst_path: Path, processor: SequentialProcessor):
+    # Ensure Ray is imported in this scope
+    import ray
+
     dst_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Process the audio track and save the spectrogram.
+    # Process the audio track and save the spectrogram
     sig_bass = Signal(demix_path / 'bass.wav', num_channels=1)
     sig_drums = Signal(demix_path / 'drums.wav', num_channels=1)
     sig_others = Signal(demix_path / 'other.wav', num_channels=1)
