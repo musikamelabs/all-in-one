@@ -35,6 +35,7 @@ def analyze(
   include_embeddings: bool = False,
   demix_dir: PathLike = './demix',
   spec_dir: PathLike = './spec',
+  cache_dir: PathLike = '',
   keep_byproducts: bool = False,
   multiprocess: bool = True,
 ) -> Union[AnalysisResult, List[AnalysisResult]]:
@@ -95,6 +96,7 @@ def analyze(
 
   model = load_pretrained_model(
     model_name=model,
+    cache_dir=cache_dir,
     device=device,
   )
 
