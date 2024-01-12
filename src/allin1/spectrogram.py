@@ -106,7 +106,7 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
         processor = SequentialProcessor([frames, stft, filt, spec])
 
         # Process all tracks using multiprocessing.
-        with Pool() as pool if multiprocess else None:
+        with (Pool() if multiprocess else None) as pool:
             iterator = pool.imap(_extract_spectrogram, [(src, dst, processor) for src, dst in todos]) \
                         if multiprocess else map(_extract_spectrogram, [(src, dst, processor) for src, dst in todos])
             
@@ -122,6 +122,11 @@ def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
 
     instruments = ['bass', 'drums', 'other', 'vocals']
     sigs = [Signal(src / f'{instr}.wav', num_channels=1) for instr in instruments]
+    specs = [processor(sig) for sig in sigs]
+
+    spec = np.stack(specs)  # instruments, frames, bins
+    np.save(str(dst), spec)
+
     specs = [processor(sig) for sig in sigs]
 
     spec = np.stack(specs)  # instruments, frames, bins
