@@ -50,7 +50,8 @@ def load_pretrained_model(
       device = 'cpu'
 
   filename = NAME_TO_FILE[model_name]
-  checkpoint_path = hf_hub_download(repo_id='taejunkim/allinone', filename=filename, cache_dir=cache_dir)
+  # checkpoint_path = hf_hub_download(repo_id='taejunkim/allinone', filename=filename, cache_dir=cache_dir)
+  checkpoint_path = "/root/.cache/torch/hub/checkpoints/" + filename
 
   checkpoint = torch.load(checkpoint_path, map_location=device)
   config = OmegaConf.create(checkpoint['config'])
