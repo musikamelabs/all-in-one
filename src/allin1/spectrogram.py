@@ -24,43 +24,26 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
 
   if todos:
     # Define a pre-processing chain, which is copied from madmom.
-    """frames = FramedSignalProcessor(
+    frames = FramedSignalProcessor(
       frame_size=2048,
       fps=int(44100 / 441)
     )
-    """
-    # Optimized version
-    frames = FramedSignalProcessor(
-      frame_size=1024,  # 2x faster FFT
-      fps=int(22050 / 441)  # 2x less data
-    )
-
+    
     stft = ShortTimeFourierTransformProcessor()  # caching FFT window
-    """
+    
     filt = FilteredSpectrogramProcessor(
       num_bands=12,
       fmin=30,
       fmax=17000,
       norm_filters=True
     )
-    """
-    # Optimized
-    filt = FilteredSpectrogramProcessor(
-      num_bands=12,
-      fmin=30,
-      fmax=8500,  # Half due to reduced sample rate
-      norm_filters=True
-    )
+    
     spec = LogarithmicSpectrogramProcessor(mul=1, add=1)
     processor = SequentialProcessor([frames, stft, filt, spec])
 
     # Process all tracks using multiprocessing.
-    """if multiprocess:
-      pool = Pool()
-    """
-    # Optimized
     if multiprocess:
-      pool = Pool(processes=min(6, len(todos)))  # Limit workers
+      pool = Pool()
       map_fn = pool.imap
     else:
       pool = None
@@ -85,25 +68,16 @@ def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
 
   dst.parent.mkdir(parents=True, exist_ok=True)
 
-  """
   sig_bass = Signal(src / 'bass.wav', num_channels=1)
   sig_drums = Signal(src / 'drums.wav', num_channels=1)
   sig_other = Signal(src / 'other.wav', num_channels=1)
   sig_vocals = Signal(src / 'vocals.wav', num_channels=1)
-  """
-  # Optimized
-  sig_bass = Signal(src / 'bass.wav', num_channels=1, sample_rate=22050, dtype=np.float32)
-  sig_drums = Signal(src / 'drums.wav', num_channels=1, sample_rate=22050, dtype=np.float32)
-  sig_other = Signal(src / 'other.wav', num_channels=1, sample_rate=22050, dtype=np.float32)
-  sig_vocals = Signal(src / 'vocals.wav', num_channels=1, sample_rate=22050, dtype=np.float32)
-
+  
   spec_bass = processor(sig_bass)
   spec_drums = processor(sig_drums)
   spec_others = processor(sig_other)
   spec_vocals = processor(sig_vocals)
 
-  # spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals])  # instruments, frames, bins
-  # Optimized
-  spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals], dtype=np.float32)
-
+  spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals])  # instruments, frames, bins
+  
   np.save(str(dst), spec)
