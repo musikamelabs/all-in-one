@@ -78,11 +78,11 @@ class Config:
   defaults: List[Any] = field(default_factory=lambda: defaults)
 
   # Data configurations --------------------------------------------------
-  sample_rate: int = 44100
+  sample_rate: int = 44100 # Original = 44100, Optimized = 22050
   window_size: int = 2048
   num_bands: int = 12
-  hop_size: int = 441  # FPS=100
-  fps: int = 100
+  hop_size: int = 441  # FPS=100 Original = 441, Optimized = 
+  fps: int = 100 # Original = 100, Optimized = 50
   fmin: int = 30
   fmax: int = 17000
   demucs_model: str = 'htdemucs'
@@ -95,7 +95,7 @@ class Config:
 
   # Training configurations -----------------------------------------------
   segment_size: Optional[float] = 300
-  batch_size: int = 1
+  batch_size: int = 1 # Original = 1, Optimized = 12
 
   optimizer: str = 'radam'
   sched: Optional[str] = 'plateau'
@@ -132,11 +132,11 @@ class Config:
   instrument_attention: bool = True
   double_attention: bool = True
 
-  depth: int = 11
+  depth: int = 8 # Original = 11, Optimized = 8
   dilation_factor: int = 2
   dilation_max: int = 3200  # 32 seconds, not in use
   num_heads: int = 2
-  kernel_size: int = 5
+  kernel_size: int = 3 # Original = 5, Optimized = 3
 
   dim_input: int = 81
   dim_embed: int = 24
