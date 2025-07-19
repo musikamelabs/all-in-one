@@ -102,6 +102,8 @@ def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
   spec_others = processor(sig_other)
   spec_vocals = processor(sig_vocals)
 
-  spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals])  # instruments, frames, bins
+  # spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals])  # instruments, frames, bins
+  # Optimized
+  spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals], dtype=np.float32)
 
   np.save(str(dst), spec)
