@@ -33,10 +33,6 @@ def demix(paths: List[Path], demix_dir: Path, device: Union[str, torch.device]):
         '--out', demix_dir.as_posix(),
         '--name', 'hdemucs_mmi',
         '--device', str(device),
-        '--segment', '8',      # Optimized: Optimal segment size for T4 memory
-        '--overlap', '0.1',    # Optimized: Reduced overlap for 2x speed boost
-        '--jobs', '1',         # Optimized: Reduced from 2 to speed up init
-        '--float32',           # Optimized: Better T4 tensor core utilization
         *[path.as_posix() for path in todos],
       ],
       check=True,
