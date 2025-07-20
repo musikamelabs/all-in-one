@@ -26,7 +26,7 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
     # Define a pre-processing chain, which is copied from madmom.
     frames = FramedSignalProcessor(
       # frame_size=2048,
-      frame_size=1024, #Optimized
+      frame_size=1024, # Optimized
       fps=int(44100 / 441)
     )
     
@@ -44,8 +44,7 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
 
     # Process all tracks using multiprocessing.
     if multiprocess:
-      # pool = Pool()
-      pool = Pool(processes=6) # Optimized
+      pool = Pool()
       map_fn = pool.imap
     else:
       pool = None
