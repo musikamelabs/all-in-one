@@ -37,7 +37,6 @@ def demix(paths: List[Path], demix_dir: Path, device: Union[str, torch.device]):
         '--overlap', '0.1',    # Reduced overlap for 2x speed boost
         '--jobs', '1',         # Reduced from 2 to speed up init
         '--float32',           # Better T4 tensor core utilization
-        '--no-split',          # Avoid unnecessary file splitting overhead
         *[path.as_posix() for path in todos],
       ],
       check=True,
