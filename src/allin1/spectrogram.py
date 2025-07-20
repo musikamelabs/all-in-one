@@ -63,6 +63,7 @@ def extract_spectrograms(demix_paths: List[Path], spec_dir: Path, multiprocess: 
   return spec_paths
 
 
+"""
 def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
   src, dst, processor = args
 
@@ -81,3 +82,21 @@ def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
   spec = np.stack([spec_bass, spec_drums, spec_others, spec_vocals])  # instruments, frames, bins
   
   np.save(str(dst), spec)
+"""
+# Optimized Version (Sequentially)
+def _extract_spectrogram(args: Tuple[Path, Path, SequentialProcessor]):
+  src, dst, processor = args
+  dst.parent.mkdir(parents=True, exist_ok=True)
+  
+  instruments = ['bass.wav', 'drums.wav', 'other.wav', 'vocals.wav']
+  spectrograms = []
+  
+  for instrument in instruments:
+    sig = Signal(src / instrument, num_channels=1)
+    spec = processor(sig)
+    spectrograms.append(spec)
+    del sig  # Free memory immediately
+  
+  spec = np.stack(spectrograms, dtype=np.float32)
+  np.save(str(dst), spec)
+  del spectrograms
